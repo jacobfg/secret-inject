@@ -1,4 +1,4 @@
-# secure-inject
+# secret-inject
 
 Uses goreleaser for build, relase & homebrew management
 

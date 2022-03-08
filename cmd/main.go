@@ -27,22 +27,16 @@ var (
 )
 
 func RunWrapper(cmd *cobra.Command, args []string) {
-	// elementMap := make(map[string]string)
 	for _, s := range envValues {
 		strs := strings.SplitN(s, "=", 2)
 		se := strings.SplitN(s, "|", 2)
-		// elementMap[strs[0]] = strs[1]
 
 		_, token, err := GetSecret(se[0], se[1])
 		if err != nil {
 			panic(err)
 		}
-
-		fmt.Println(token)
 		os.Setenv(strs[0], token)
 	}
-	fmt.Println(os.Environ())
-	// fmt.Print(elementMap)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -55,41 +49,11 @@ func Execute() {
 }
 
 func init() {
-	// cobra.OnInitialize(initConfig)
-
-	// // Here you will define your flags and configuration settings.
-	// // Cobra supports persistent flags, which, if defined here,
-	// // will be global for your application.
-	// // fmt.Println("flag")
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.my-calc.yaml)")
-
-	// // Cobra also supports local flags, which will only run
-	// // when this action is called directly.
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
 	cmd.Flags().StringArrayVarP(&envValues, "env-var", "v", []string{}, "vars")
 	cmd.MarkFlagRequired("env-var")
 }
-
-// func main() {
-
-// 	var cmdName = flag.StringP("commasnd", "c", "", "cmd message for flag n")
-// 	var nFlag = flag.StringP("tokens", "t", "", "help message for flag n")
-
-// 	flag.Parse()
-
-// 	fmt.Println(*nFlag)
-// 	fmt.Println(*cmdName)
-// 	fmt.Println("--")
-// 	fmt.Println(flag.Args())
-
-// 	_, token, err := GetSecret(serverURL, "github_token")
-// 	if err != nil {
-// 		fmt.Print(err)
-// 	}
-
-// 	// fmt.Println(token)
-// 	os.Setenv("GITHUB_TOKEN", token)
-// 	ExecCommand(os.Args[1], os.Args[2:]...)
-// }
 
 func main() {
 	cmd.Execute()

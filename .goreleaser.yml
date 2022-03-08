@@ -1,5 +1,5 @@
 # .goreleaser.yml
-project_name: secure-inject
+project_name: secret-inject
 
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
@@ -14,7 +14,7 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    binary: secure-inject
+    binary: secret-inject
 
     flags:
       - -trimpath
@@ -66,13 +66,13 @@ release:
   # Note: it can only be one: either github, gitlab or gitea
   github:
     owner: jacobfg
-    name: secure-inject
+    name: secret-inject
 
   # You can change the name of the release.
   name_template: "{{.ProjectName}}-v{{.Version}}"
 
 # brews:
-#   - name: secure-inject
+#   - name: secret-inject
 #     tap:
 #       owner: jacobfg
 #       name: homebrew-taps
@@ -110,18 +110,18 @@ release:
 #     # So you can `brew test` your formula.
 #     # Default is empty.
 #     test: |
-#       system "#{bin}/secure-inject version"
+#       system "#{bin}/secret-inject version"
 #       # test version to ensure that version number is embedded in binary
 #       # somehow add os/arch in version output
-#       assert_match "secure-inject: {{.Version}} ({{.ShortCommit}})", shell_output("#{bin}/secure-inject version")
-#       # assert_match "built by #{tap.user}", shell_output("#{bin}/secure-inject version")
+#       assert_match "secret-inject: {{.Version}} ({{.ShortCommit}})", shell_output("#{bin}/secret-inject version")
+#       # assert_match "built by #{tap.user}", shell_output("#{bin}/secret-inject version")
 
 #     # Custom install script for brew.
 #     # Default is 'bin.install "program"'.
 #     install: |
-#       bin.install "secure-inject"
-#       bash_completion.install "completions/secure-inject.bash"
-#       fish_completion.install "completions/secure-inject.fish"
-#       zsh_completion.install "completions/secure-inject.zsh" => "_secure-inject"
+#       bin.install "secret-inject"
+#       bash_completion.install "completions/secret-inject.bash"
+#       fish_completion.install "completions/secret-inject.fish"
+#       zsh_completion.install "completions/secret-inject.zsh" => "_secret-inject"
 
 #       prefix.install_metafiles

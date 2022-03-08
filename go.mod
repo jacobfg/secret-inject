@@ -1,4 +1,4 @@
-module github.com/jacobfg/secure-inject
+module github.com/jacobfg/secret-inject
 
 go 1.17
 
