@@ -1,0 +1,127 @@
+# .goreleaser.yml
+project_name: secure-inject
+
+# This is an example .goreleaser.yml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+
+builds:
+  - main: ./cmd
+
+    # Binary name.
+    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
+    # Default is the name of the project directory.
+    binary: secure-inject
+
+    flags:
+      - -trimpath
+      - -v
+
+    ldflags:
+      - -s -w
+      - -X {{.ModulePath}}/cmd/internal.Version={{.Version}}
+      - -X {{.ModulePath}}/cmd/internal.GitCommit={{.ShortCommit}}
+
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    
+    goarch:
+      - amd64
+      - arm64
+
+    mod_timestamp: '{{ .CommitTimestamp }}'
+
+    # run multiple times, not ideal - pre global hook requires a compiled binary
+    # hooks:
+    #   post: ./scripts/completions.sh
+
+snapshot:
+  name_template: '{{ incpatch .Version }}-snapshot'
+  # name_template: "{{ .Tag }}-snapshot"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+signs:
+  - artifacts: checksum
+    args: ["-u", "10949267+jacobfg@users.noreply.github.com", "--output", "${signature}", "--detach-sign", "${artifact}"]
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format: tar.gz
+    files:
+      - LICENSE
+      - README.md
+      # - completions/*
+
+release:
+  # Note: it can only be one: either github, gitlab or gitea
+  github:
+    owner: jacobfg
+    name: secure-inject
+
+  # You can change the name of the release.
+  name_template: "{{.ProjectName}}-v{{.Version}}"
+
+# brews:
+#   - name: secure-inject
+#     tap:
+#       owner: jacobfg
+#       name: homebrew-taps
+#       # Optionally a token can be provided, if it differs from the token provided to GoReleaser
+#       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+
+#     # Allows you to set a custom download strategy. Note that you'll need
+#     # to implement the strategy and add it to your tap repository.
+#     # Example: https://docs.brew.sh/Formula-Cookbook#specifying-the-download-strategy-explicitly
+#     # Default is empty.
+#     download_strategy: GitHubPrivateRepositoryReleaseDownloadStrategy
+
+#     # Allows you to add a custom require_relative at the top of the formula template
+#     # Default is empty
+#     custom_require: ./lib/github_private_strategy.rb
+
+#     # Git author used to commit to the repository.
+#     # Defaults are shown.
+#     commit_author:
+#       name: jacobfg
+#       email: 10949267+jacobfg@users.noreply.github.com 
+
+#     # Your app's homepage.
+#     # Default is empty.
+#     homepage: "https://{{.ModulePath}}"
+
+#     # Template of your app's description.
+#     # Default is empty.
+#     description: "CLI tools for working with FIT files"
+
+#     # SPDX identifier of your app's license.
+#     # Default is empty.
+#     license: "Apache-2.0"
+
+#     # So you can `brew test` your formula.
+#     # Default is empty.
+#     test: |
+#       system "#{bin}/secure-inject version"
+#       # test version to ensure that version number is embedded in binary
+#       # somehow add os/arch in version output
+#       assert_match "secure-inject: {{.Version}} ({{.ShortCommit}})", shell_output("#{bin}/secure-inject version")
+#       # assert_match "built by #{tap.user}", shell_output("#{bin}/secure-inject version")
+
+#     # Custom install script for brew.
+#     # Default is 'bin.install "program"'.
+#     install: |
+#       bin.install "secure-inject"
+#       bash_completion.install "completions/secure-inject.bash"
+#       fish_completion.install "completions/secure-inject.fish"
+#       zsh_completion.install "completions/secure-inject.zsh" => "_secure-inject"
+
+#       prefix.install_metafiles
