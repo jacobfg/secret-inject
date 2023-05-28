@@ -40,6 +40,34 @@ builds:
     # hooks:
     #   post: ./scripts/completions.sh
 
+  - main: ./cmd2
+    id: cmd2
+
+    # Binary name.
+    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
+    # Default is the name of the project directory.
+    binary: secret-inject2
+
+    flags:
+      - -trimpath
+      - -v
+
+    ldflags:
+      - -s -w
+      - -X {{.ModulePath}}/cmd/internal.Version={{.Version}}
+      - -X {{.ModulePath}}/cmd/internal.GitCommit={{.ShortCommit}}
+
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    
+    goarch:
+      - amd64
+      - arm64
+
+    mod_timestamp: '{{ .CommitTimestamp }}'
+
 snapshot:
   name_template: '{{ incpatch .Version }}-snapshot'
   # name_template: "{{ .Tag }}-snapshot"
